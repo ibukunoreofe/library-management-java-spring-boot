@@ -1,0 +1,24 @@
+package com.eaproc.tutorials.librarymanagement.health;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.actuate.health.AutoConfigureHealth;
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+@AutoConfigureHealth
+public class DatabaseHealthIndicatorTest {
+
+    @Autowired
+    private HealthIndicator dbHealthIndicator;
+
+    @Test
+    public void testDatabaseHealthIndicatorUp() {
+        Health health = dbHealthIndicator.health();
+        assertThat(health.getStatus()).isEqualTo(org.springframework.boot.actuate.health.Status.UP);
+        assertThat(health.getDetails().get("database")).isEqualTo("PostgreSQL");
+    }
+}

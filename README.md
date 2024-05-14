@@ -1,2 +1,12 @@
-# basic-spring-rest-api
-A simple Java Spring Boot Rest API
+
+SET JVM HOME to the path installed
+```shell
+$ export JAVA_HOME="~\.jdks\openjdk-22.0.1"
+```
+
+
+### Running
+
+```shell
+./mvnw spring-boot:run
+```

@@ -1,0 +1,45 @@
+package com.eaproc.tutorials.librarymanagement.health;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.Status;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.actuate.health.AutoConfigureHealth;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+@AutoConfigureHealth
+public class DiskSpaceHealthIndicatorTest {
+
+    @Autowired
+    private DiskSpaceHealthIndicator diskSpaceHealthIndicator;
+
+    @Test
+    public void testDiskSpaceHealthIndicatorUp() {
+        Health health = diskSpaceHealthIndicator.health();
+        assertThat(health.getStatus()).isEqualTo(Status.UP);
+        assertThat(health.getDetails().get("total")).isNotNull();
+        assertThat(health.getDetails().get("free")).isNotNull();
+        assertThat(health.getDetails().get("threshold")).isNotNull();
+    }
+
+    @Test
+    public void testDiskSpaceHealthIndicatorDown() {
+        // Simulate a condition where disk space is below threshold
+        DiskSpaceHealthIndicator customIndicator = new DiskSpaceHealthIndicator() {
+            @Override
+            protected long getFreeSpace() {
+                return threshold - 1; // Just below the threshold
+            }
+        };
+
+        Health health = customIndicator.health();
+        assertThat(health.getStatus()).isEqualTo(Status.DOWN);
+        assertThat(health.getDetails().get("error")).isEqualTo("Free disk space below threshold");
+        assertThat(health.getDetails().get("total")).isNotNull();
+        assertThat(health.getDetails().get("free")).isNotNull();
+        assertThat(health.getDetails().get("threshold")).isNotNull();
+    }
+}
