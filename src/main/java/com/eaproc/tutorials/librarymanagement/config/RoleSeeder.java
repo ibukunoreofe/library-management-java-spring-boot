@@ -5,12 +5,14 @@ import com.eaproc.tutorials.librarymanagement.service.RoleService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 public class RoleSeeder {
 
     @Bean
+    @Order(1)
     @Transactional
     CommandLineRunner initRoles(RoleService roleService) {
         return args -> {

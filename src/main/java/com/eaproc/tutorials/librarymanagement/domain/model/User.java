@@ -1,10 +1,10 @@
 package com.eaproc.tutorials.librarymanagement.domain.model;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,6 +28,10 @@ public class User {
 
     @Column(name = "remember_token", length = 255)
     private String rememberToken;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
