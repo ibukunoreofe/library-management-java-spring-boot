@@ -1,8 +1,8 @@
 package com.eaproc.tutorials.librarymanagement.config;
 
+import com.eaproc.tutorials.librarymanagement.config.providers.CustomAuthenticationProvider;
 import com.eaproc.tutorials.librarymanagement.filter.JwtAuthenticationFilter;
-import com.eaproc.tutorials.librarymanagement.service.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.eaproc.tutorials.librarymanagement.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,11 +18,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private final UserService UserService;
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private final CustomAuthenticationProvider customAuthenticationProvider;
+
+    public SecurityConfig(UserService UserService, JwtAuthenticationFilter jwtAuthenticationFilter, CustomAuthenticationProvider customAuthenticationProvider) {
+        this.UserService = UserService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.customAuthenticationProvider = customAuthenticationProvider;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -45,12 +49,9 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(customUserDetailsService);
+        authenticationManagerBuilder
+                .authenticationProvider(customAuthenticationProvider)
+                .userDetailsService(UserService);
         return authenticationManagerBuilder.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

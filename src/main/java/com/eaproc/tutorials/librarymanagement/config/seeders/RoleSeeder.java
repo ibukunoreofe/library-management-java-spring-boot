@@ -1,6 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.config.seeders;
 
-import com.eaproc.tutorials.librarymanagement.config.RoleConstants;
+import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
 import com.eaproc.tutorials.librarymanagement.domain.model.Role;
 import com.eaproc.tutorials.librarymanagement.service.RoleService;
 import org.springframework.boot.CommandLineRunner;

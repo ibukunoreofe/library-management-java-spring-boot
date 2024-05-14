@@ -1,6 +1,6 @@
-package com.eaproc.tutorials.librarymanagement.config;
+package com.eaproc.tutorials.librarymanagement.domain.model;
 
-public class RoleConstants {
+public final class RoleConstants {
     public static final long ADMIN_ROLE_ID = 1L;
     public static final long USER_ROLE_ID = 2L;
     public static final String ADMIN_ROLE_NAME = "ADMIN";

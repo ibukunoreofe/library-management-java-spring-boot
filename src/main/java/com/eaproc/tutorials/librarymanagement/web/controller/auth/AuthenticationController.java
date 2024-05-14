@@ -1,6 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 
-import com.eaproc.tutorials.librarymanagement.service.CustomUserDetailsService;
+import com.eaproc.tutorials.librarymanagement.service.UserService;
 import com.eaproc.tutorials.librarymanagement.util.JwtTokenUtil;
 import com.eaproc.tutorials.librarymanagement.web.request.AuthenticationRequest;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,11 +20,11 @@ public class AuthenticationController {
 
     private final JwtTokenUtil jwtTokenUtil;
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserService userDetailsService;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
-    public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, CustomUserDetailsService userDetailsService) {
+    public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, UserService userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
