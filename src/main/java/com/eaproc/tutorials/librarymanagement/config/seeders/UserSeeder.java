@@ -1,5 +1,6 @@
-package com.eaproc.tutorials.librarymanagement.config;
+package com.eaproc.tutorials.librarymanagement.config.seeders;
 
+import com.eaproc.tutorials.librarymanagement.config.RoleConstants;
 import com.eaproc.tutorials.librarymanagement.domain.model.Role;
 import com.eaproc.tutorials.librarymanagement.domain.model.User;
 import com.eaproc.tutorials.librarymanagement.service.RoleService;
@@ -9,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +18,12 @@ public class UserSeeder {
 
     @Value("${admin.email:admin@example.com}")
     private String adminEmail;
+
+    private final PasswordEncoder passwordEncoder;
+
+    public UserSeeder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Bean
     @Order(2)
@@ -32,7 +38,6 @@ public class UserSeeder {
             User adminUser = userService.findUserByEmail(adminEmail).orElse(null);
 
             if (adminUser == null) {
-                PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 String encryptedPassword = passwordEncoder.encode("password");
 
                 adminUser = new User();

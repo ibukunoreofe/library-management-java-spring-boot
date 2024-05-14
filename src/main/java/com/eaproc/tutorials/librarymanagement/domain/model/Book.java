@@ -24,7 +24,8 @@ public class Book {
     @Column(nullable = false, length = 255)
     private String author;
 
-    @Column(nullable = false, length = 255)
+    // https://www.activebarcode.com/codes/isbn10
+    @Column(nullable = false, length = 50)
     private String isbn;
 
     @Column(nullable = false)
