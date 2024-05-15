@@ -1,5 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 
+import com.eaproc.tutorials.librarymanagement.annotation.PublicEndpoint;
 import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.service.UserService;
 import com.eaproc.tutorials.librarymanagement.util.JwtTokenUtil;
@@ -39,6 +40,7 @@ public class LoginController {
         this.userService = userService;
     }
 
+    @PublicEndpoint
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody AuthenticationRequest authenticationRequest, BindingResult bindingResult, UserMapperImpl userMapper) {
         ResponseEntity<?> validationResponse = ValidationUtil.handleValidationErrors(bindingResult);

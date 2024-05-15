@@ -1,5 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 
+import com.eaproc.tutorials.librarymanagement.annotation.PublicEndpoint;
 import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
 import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.service.RoleService;
@@ -45,6 +46,7 @@ public class RegisterController {
         this.userMapper = userMapper;
     }
 
+    @PublicEndpoint
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest registrationRequest, BindingResult bindingResult) {
         ResponseEntity<?> validationResponse = ValidationUtil.handleValidationErrors(bindingResult);

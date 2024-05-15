@@ -13,15 +13,14 @@ import java.io.IOException;
 
 @Component
 public class CustomAccessDeniedHandler extends AccessDeniedHandlerImpl {
-//    Not required again
-//    @Override
-//    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-//        if (!response.isCommitted()) {
-//            if (response.getStatus() == HttpServletResponse.SC_NOT_FOUND) {
-//                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
-//            } else {
-//                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
-//            }
-//        }
-//    }
+    @Override
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        if (!response.isCommitted()) {
+            if (response.getStatus() == HttpServletResponse.SC_NOT_FOUND) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
+            } else {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
+            }
+        }
+    }
 }

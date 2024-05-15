@@ -2,8 +2,10 @@ package com.eaproc.tutorials.librarymanagement.config;
 
 import com.eaproc.tutorials.librarymanagement.config.providers.CustomAuthenticationProvider;
 import com.eaproc.tutorials.librarymanagement.filter.CustomAppFilterManager;
+import com.eaproc.tutorials.librarymanagement.security.PublicEndpointRequestMatcher;
 import com.eaproc.tutorials.librarymanagement.service.UserService;
 import com.eaproc.tutorials.librarymanagement.web.exception.CustomAccessDeniedHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,9 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
 @EnableWebSecurity
@@ -25,13 +25,15 @@ public class SecurityConfig {
     private final CustomAppFilterManager customAppFilterManager;
     private final CustomAuthenticationProvider customAuthenticationProvider;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final PublicEndpointRequestMatcher publicEndpointRequestMatcher;
 
     @Autowired
-    public SecurityConfig(UserService userService, CustomAppFilterManager customAppFilterManager, CustomAuthenticationProvider customAuthenticationProvider, CustomAccessDeniedHandler customAccessDeniedHandler) {
+    public SecurityConfig(UserService userService, CustomAppFilterManager customAppFilterManager, CustomAuthenticationProvider customAuthenticationProvider, CustomAccessDeniedHandler customAccessDeniedHandler, PublicEndpointRequestMatcher publicEndpointRequestMatcher) {
         this.userService = userService;
         this.customAppFilterManager = customAppFilterManager;
         this.customAuthenticationProvider = customAuthenticationProvider;
         this.customAccessDeniedHandler = customAccessDeniedHandler;
+        this.publicEndpointRequestMatcher = publicEndpointRequestMatcher;
     }
 
     @Bean
@@ -39,7 +41,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection for simplicity
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/actuator/health", "/api/auth/login", "/api/auth/register").permitAll() // Allow public access to specific endpoints
+                        .requestMatchers(publicEndpointRequestMatcher).permitAll() // Allow public access to specific endpoints
                         .anyRequest().authenticated() // Require authentication for all other requests
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling

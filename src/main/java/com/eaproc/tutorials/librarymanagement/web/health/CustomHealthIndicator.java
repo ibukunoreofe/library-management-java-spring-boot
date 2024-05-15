@@ -1,4 +1,4 @@
-package com.eaproc.tutorials.librarymanagement.health;
+package com.eaproc.tutorials.librarymanagement.web.health;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
