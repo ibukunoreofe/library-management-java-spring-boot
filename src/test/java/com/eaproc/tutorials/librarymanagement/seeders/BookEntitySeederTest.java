@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class BookSeederTest {
+public class BookEntitySeederTest {
 
     @Autowired
     private BookService bookService;

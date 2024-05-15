@@ -1,6 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.config.seeders;
 
-import com.eaproc.tutorials.librarymanagement.domain.model.Book;
+import com.eaproc.tutorials.librarymanagement.domain.model.BookEntity;
 import com.eaproc.tutorials.librarymanagement.service.BookService;
 import com.github.javafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
@@ -43,14 +43,14 @@ public class BookSeeder {
                     );
                     int copies = MIN_COPIES + random.nextInt(MAX_COPIES - MIN_COPIES + 1);
 
-                    Book book = new Book();
-                    book.setTitle(title);
-                    book.setAuthor(author);
-                    book.setIsbn(isbn);
-                    book.setPublishedAt(publishDate);
-                    book.setCopies(copies);
+                    BookEntity bookEntity = new BookEntity();
+                    bookEntity.setTitle(title);
+                    bookEntity.setAuthor(author);
+                    bookEntity.setIsbn(isbn);
+                    bookEntity.setPublishedAt(publishDate);
+                    bookEntity.setCopies(copies);
 
-                    bookService.saveBook(book);
+                    bookService.saveBook(bookEntity);
                 }
             }
         };

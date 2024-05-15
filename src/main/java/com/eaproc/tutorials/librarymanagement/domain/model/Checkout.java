@@ -23,7 +23,7 @@ public class Checkout {
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
+    private BookEntity bookEntity;
 
     @Column(name = "checkout_date_time_utc", nullable = false)
     private LocalDateTime checkoutDateTimeUtc;
