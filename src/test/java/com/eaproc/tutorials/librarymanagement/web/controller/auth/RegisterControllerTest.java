@@ -3,115 +3,110 @@ package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
 import com.eaproc.tutorials.librarymanagement.domain.model.RoleEntity;
 import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
-import com.eaproc.tutorials.librarymanagement.service.RoleService;
-import com.eaproc.tutorials.librarymanagement.service.UserService;
-import com.eaproc.tutorials.librarymanagement.util.JwtTokenUtil;
-import com.eaproc.tutorials.librarymanagement.web.mapper.impl.UserMapperImpl;
+import com.eaproc.tutorials.librarymanagement.domain.repository.RoleRepository;
+import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
 import com.eaproc.tutorials.librarymanagement.web.request.RegistrationRequest;
-import com.eaproc.tutorials.librarymanagement.web.response.AuthResponse;
-import com.eaproc.tutorials.librarymanagement.web.response.ErrorResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.BindingResult;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Optional;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
+@SpringBootTest
+@AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class RegisterControllerTest {
 
-    @Mock
-    private UserService userService;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
-    private RoleService roleService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @Mock
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Mock
-    private JwtTokenUtil jwtTokenUtil;
-
-    @Mock
-    private UserMapperImpl userMapper;
-
-    @InjectMocks
-    private RegisterController registerController;
-
-    @Mock
-    private BindingResult bindingResult;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    public void testSuccessfulRegistration() {
-        RegistrationRequest request = new RegistrationRequest();
-        request.setName("Test User");
-        request.setEmail("test@example.com");
-        request.setPassword("password");
+        // This should not be necessary if seeders runs first
+        // however, we have set dirty context here to before class
+        userRepository.deleteAll();
+        roleRepository.deleteAll();
 
         RoleEntity userRole = new RoleEntity();
+        userRole.setId(RoleConstants.USER_ROLE_ID);
         userRole.setName("USER");
-
-        UserEntity savedUser = new UserEntity();
-        savedUser.setEmail("test@example.com");
-
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(userService.findUserByEmail("test@example.com")).thenReturn(Optional.empty());
-        when(roleService.findRoleById(RoleConstants.USER_ROLE_ID)).thenReturn(Optional.of(userRole));
-        when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
-        when(userService.saveUser(any(UserEntity.class))).thenReturn(savedUser);
-        when(jwtTokenUtil.generateToken("test@example.com")).thenReturn("mockToken");
-        when(jwtTokenUtil.getExpirationDateFromToken("mockToken")).thenReturn(new java.util.Date());
-        when(userMapper.mapTo(savedUser)).thenReturn(new com.eaproc.tutorials.librarymanagement.web.dto.UserDto());
-
-        ResponseEntity<?> response = registerController.registerUser(request, bindingResult);
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        AuthResponse authResponse = (AuthResponse) response.getBody();
-        assertEquals("mockToken", authResponse.getToken());
+        roleRepository.save(userRole);
     }
 
     @Test
-    public void testRegistrationWithExistingEmail() {
+    public void testSuccessfulRegistration() throws Exception {
         RegistrationRequest request = new RegistrationRequest();
         request.setName("Test User");
         request.setEmail("test@example.com");
         request.setPassword("password");
 
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(userService.findUserByEmail("test@example.com")).thenReturn(Optional.of(new UserEntity()));
-
-        ResponseEntity<?> response = registerController.registerUser(request, bindingResult);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Email is already in use", ((ErrorResponse) response.getBody()).getMessage());
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.user.email").value("test@example.com"));
     }
 
     @Test
-    public void testRegistrationWithValidationErrors() {
+    public void testRegistrationWithExistingEmail() throws Exception {
+        // Prepare existing user
+        UserEntity existingUser = UserEntity.builder()
+                .name("Existing User")
+                .email("existing@example.com")
+                .password(passwordEncoder.encode("password"))
+                .roleEntity(roleRepository.findById(RoleConstants.USER_ROLE_ID).get())
+                .build();
+        userRepository.save(existingUser);
+
+        RegistrationRequest request = new RegistrationRequest();
+        request.setName("Test User");
+        request.setEmail("existing@example.com");
+        request.setPassword("password");
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Email is already in use"));
+    }
+
+    @Test
+    public void testRegistrationWithValidationErrors() throws Exception {
         RegistrationRequest request = new RegistrationRequest();
         request.setName("");
         request.setEmail("");
         request.setPassword("");
 
-        when(bindingResult.hasErrors()).thenReturn(true);
-        when(bindingResult.getAllErrors()).thenReturn(java.util.Collections.singletonList(new org.springframework.validation.FieldError("registrationRequest", "name", "Name is required")));
-
-        ResponseEntity<?> response = registerController.registerUser(request, bindingResult);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Validation errors: Name is required", ((ErrorResponse) response.getBody()).getMessage());
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(containsString("Name is mandatory")))
+                .andExpect(jsonPath("$.message").value(containsString("Email is mandatory")))
+                .andExpect(jsonPath("$.message").value(containsString("Password is mandatory")))
+                .andExpect(jsonPath("$.message").value(containsString("Password should be between 8 and 50 characters")));
     }
 }
