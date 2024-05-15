@@ -1,5 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.web.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.Size;
 
 @Setter
 @Getter
+@AllArgsConstructor
 public class AuthenticationRequest {
 
     // Getters and setters
