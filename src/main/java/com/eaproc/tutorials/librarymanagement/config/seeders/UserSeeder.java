@@ -2,7 +2,7 @@ package com.eaproc.tutorials.librarymanagement.config.seeders;
 
 import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
 import com.eaproc.tutorials.librarymanagement.domain.model.RoleEntity;
-import com.eaproc.tutorials.librarymanagement.domain.model.User;
+import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.service.RoleService;
 import com.eaproc.tutorials.librarymanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,18 +35,18 @@ public class UserSeeder {
                 throw new IllegalStateException("Admin role not found");
             }
 
-            User adminUser = userService.findUserByEmail(adminEmail).orElse(null);
+            UserEntity adminUserEntity = userService.findUserByEmail(adminEmail).orElse(null);
 
-            if (adminUser == null) {
+            if (adminUserEntity == null) {
                 String encryptedPassword = passwordEncoder.encode("password");
 
-                adminUser = new User();
-                adminUser.setName("Admin"); // You can set a default name or make it configurable
-                adminUser.setEmail(adminEmail);
-                adminUser.setPassword(encryptedPassword);
-                adminUser.setRoleEntity(adminRoleEntity);
+                adminUserEntity = new UserEntity();
+                adminUserEntity.setName("Admin"); // You can set a default name or make it configurable
+                adminUserEntity.setEmail(adminEmail);
+                adminUserEntity.setPassword(encryptedPassword);
+                adminUserEntity.setRoleEntity(adminRoleEntity);
 
-                userService.saveUser(adminUser);
+                userService.saveUser(adminUserEntity);
             }
         };
     }

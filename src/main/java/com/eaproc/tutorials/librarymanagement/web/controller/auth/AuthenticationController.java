@@ -1,6 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 
-import com.eaproc.tutorials.librarymanagement.domain.model.User;
+import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.service.UserService;
 import com.eaproc.tutorials.librarymanagement.util.JwtTokenUtil;
 import com.eaproc.tutorials.librarymanagement.web.dto.UserDto;
@@ -54,32 +54,32 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Validation errors: " + errors));
         }
 
-        logger.info("Authentication request for user: {}", authenticationRequest.getEmail());
+        logger.info("Authentication request for userEntity: {}", authenticationRequest.getEmail());
 
         try {
             // Validate the username and password
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword())
             );
-            logger.info("Authentication successful for user: {}", authenticationRequest.getEmail());
+            logger.info("Authentication successful for userEntity: {}", authenticationRequest.getEmail());
         } catch (AuthenticationException e) {
-            logger.error("Authentication failed for user: {}", authenticationRequest.getEmail(), e);
+            logger.error("Authentication failed for userEntity: {}", authenticationRequest.getEmail(), e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
         }
 
-        // Fetch the user directly
-        User user = userService.findUserByEmail(authenticationRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        // Fetch the userEntity directly
+        UserEntity userEntity = userService.findUserByEmail(authenticationRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("UserEntity not found"));
 
         // Generate the JWT token
-        final String token = jwtTokenUtil.generateToken(user.getEmail());
+        final String token = jwtTokenUtil.generateToken(userEntity.getEmail());
         final Date expiration = jwtTokenUtil.getExpirationDateFromToken(token);
 
         String expiresAt = DateTimeFormatter.ISO_INSTANT
                 .withZone(ZoneOffset.UTC)
                 .format(Instant.ofEpochMilli(expiration.getTime()));
 
-        UserDto userResponse = userMapper.mapTo(user);
+        UserDto userResponse = userMapper.mapTo(userEntity);
         AuthResponse authResponse = new AuthResponse(token, expiration.getTime(), expiresAt, userResponse);
 
         return ResponseEntity.ok(authResponse);

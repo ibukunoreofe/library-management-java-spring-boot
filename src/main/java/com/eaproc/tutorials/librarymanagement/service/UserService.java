@@ -1,6 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.service;
 
-import com.eaproc.tutorials.librarymanagement.domain.model.User;
+import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,26 +21,26 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    public Optional<User> findUserByEmail(String email) {
+    public Optional<UserEntity> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public void saveUser(User user) {
-        userRepository.save(user);
+    public void saveUser(UserEntity userEntity) {
+        userRepository.save(userEntity);
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        logger.info("Loading user by email: {}", email);
+        logger.info("Loading userEntity by email: {}", email);
 
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with email: " + email));
+        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("UserEntity not found with email: " + email));
 
-        logger.info("User found: {}", user);
+        logger.info("UserEntity found: {}", userEntity);
 
         org.springframework.security.core.userdetails.User.UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(email);
-        builder.password(user.getPassword());
-        builder.roles(user.getRoleEntity().getName());
+        builder.password(userEntity.getPassword());
+        builder.roles(userEntity.getRoleEntity().getName());
         return builder.build();
     }
 }
