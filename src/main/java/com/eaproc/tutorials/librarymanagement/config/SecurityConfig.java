@@ -35,7 +35,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection for simplicity
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/actuator/health", "/api/auth/login").permitAll() // Allow public access to health, info, and authentication endpoints
+                        .requestMatchers("/actuator/health", "/api/auth/login", "/api/auth/register").permitAll() // Allow public access to health, info, and authentication endpoints
                         .anyRequest().authenticated() // All other requests require authentication
                 )
                 .sessionManagement(sessionManagement -> sessionManagement

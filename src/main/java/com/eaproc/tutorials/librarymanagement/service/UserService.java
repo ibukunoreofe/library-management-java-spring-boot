@@ -25,8 +25,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
-    public void saveUser(UserEntity userEntity) {
-        userRepository.save(userEntity);
+    public UserEntity saveUser(UserEntity userEntity) {
+        return userRepository.save(userEntity);
     }
 
     @Override
