@@ -1,7 +1,7 @@
 package com.eaproc.tutorials.librarymanagement.seeders;
 
 import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
-import com.eaproc.tutorials.librarymanagement.domain.model.Role;
+import com.eaproc.tutorials.librarymanagement.domain.model.RoleEntity;
 import com.eaproc.tutorials.librarymanagement.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class RoleSeederTest {
+public class RoleEntitySeederTest {
 
     @Autowired
     private RoleService roleService;
@@ -19,13 +19,13 @@ public class RoleSeederTest {
     @Test
     @Transactional
     public void testRolesArePresent() {
-        Role adminRole = roleService.findRoleById(RoleConstants.ADMIN_ROLE_ID).orElse(null);
-        Role userRole = roleService.findRoleById(RoleConstants.USER_ROLE_ID).orElse(null);
+        RoleEntity adminRoleEntity = roleService.findRoleById(RoleConstants.ADMIN_ROLE_ID).orElse(null);
+        RoleEntity userRoleEntity = roleService.findRoleById(RoleConstants.USER_ROLE_ID).orElse(null);
 
-        assertThat(adminRole).isNotNull();
-        assertThat(adminRole.getName()).isEqualTo(RoleConstants.ADMIN_ROLE_NAME);
+        assertThat(adminRoleEntity).isNotNull();
+        assertThat(adminRoleEntity.getName()).isEqualTo(RoleConstants.ADMIN_ROLE_NAME);
 
-        assertThat(userRole).isNotNull();
-        assertThat(userRole.getName()).isEqualTo(RoleConstants.USER_ROLE_NAME);
+        assertThat(userRoleEntity).isNotNull();
+        assertThat(userRoleEntity.getName()).isEqualTo(RoleConstants.USER_ROLE_NAME);
     }
 }

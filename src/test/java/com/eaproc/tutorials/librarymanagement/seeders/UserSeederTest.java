@@ -27,7 +27,7 @@ public class UserSeederTest {
         User adminUser = userService.findUserByEmail(adminEmail).orElse(null);
 
         assertThat(adminUser).isNotNull();
-        assertThat(adminUser.getRole().getId()).isEqualTo(RoleConstants.ADMIN_ROLE_ID);
-        assertThat(adminUser.getRole().getName()).isEqualTo(RoleConstants.ADMIN_ROLE_NAME);
+        assertThat(adminUser.getRoleEntity().getId()).isEqualTo(RoleConstants.ADMIN_ROLE_ID);
+        assertThat(adminUser.getRoleEntity().getName()).isEqualTo(RoleConstants.ADMIN_ROLE_NAME);
     }
 }

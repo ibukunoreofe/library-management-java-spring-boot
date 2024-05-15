@@ -4,12 +4,7 @@ import com.eaproc.tutorials.librarymanagement.domain.model.User;
 import com.eaproc.tutorials.librarymanagement.web.dto.UserDto;
 import com.eaproc.tutorials.librarymanagement.web.mapper.Mapper;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 
 @Component
 public class UserMapperImpl implements Mapper<User, UserDto> {
@@ -20,8 +15,8 @@ public class UserMapperImpl implements Mapper<User, UserDto> {
         this.modelMapper = new ModelMapper();
         // Configure the model mapper if needed
         this.modelMapper.typeMap(User.class, UserDto.class).addMappings(mapper -> {
-            mapper.map(src -> src.getRole().getId(), UserDto::setRoleId);
-            mapper.map(src -> src.getRole().getName(), UserDto::setRole);
+            mapper.map(src -> src.getRoleEntity().getId(), UserDto::setRoleId);
+            mapper.map(src -> src.getRoleEntity().getName(), UserDto::setRole);
         });
     }
 

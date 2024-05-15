@@ -1,7 +1,7 @@
 package com.eaproc.tutorials.librarymanagement.config.seeders;
 
 import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
-import com.eaproc.tutorials.librarymanagement.domain.model.Role;
+import com.eaproc.tutorials.librarymanagement.domain.model.RoleEntity;
 import com.eaproc.tutorials.librarymanagement.domain.model.User;
 import com.eaproc.tutorials.librarymanagement.service.RoleService;
 import com.eaproc.tutorials.librarymanagement.service.UserService;
@@ -30,8 +30,8 @@ public class UserSeeder {
     @Transactional
     CommandLineRunner initUsers(UserService userService, RoleService roleService) {
         return args -> {
-            Role adminRole = roleService.findRoleById(RoleConstants.ADMIN_ROLE_ID).orElse(null);
-            if (adminRole == null) {
+            RoleEntity adminRoleEntity = roleService.findRoleById(RoleConstants.ADMIN_ROLE_ID).orElse(null);
+            if (adminRoleEntity == null) {
                 throw new IllegalStateException("Admin role not found");
             }
 
@@ -44,7 +44,7 @@ public class UserSeeder {
                 adminUser.setName("Admin"); // You can set a default name or make it configurable
                 adminUser.setEmail(adminEmail);
                 adminUser.setPassword(encryptedPassword);
-                adminUser.setRole(adminRole);
+                adminUser.setRoleEntity(adminRoleEntity);
 
                 userService.saveUser(adminUser);
             }

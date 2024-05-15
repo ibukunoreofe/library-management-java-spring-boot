@@ -1,6 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.service;
 
-import com.eaproc.tutorials.librarymanagement.domain.model.Role;
+import com.eaproc.tutorials.librarymanagement.domain.model.RoleEntity;
 import com.eaproc.tutorials.librarymanagement.domain.repository.RoleRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class RoleService {
         this.roleRepository = roleRepository;
     }
 
-    public Optional<Role> findRoleById(Long id) {
+    public Optional<RoleEntity> findRoleById(Long id) {
         return roleRepository.findById(id);
     }
 
@@ -23,7 +23,7 @@ public class RoleService {
         return roleRepository.existsById(id);
     }
 
-    public void saveRole(Role role) {
-        roleRepository.save(role);
+    public void saveRole(RoleEntity roleEntity) {
+        roleRepository.save(roleEntity);
     }
 }
