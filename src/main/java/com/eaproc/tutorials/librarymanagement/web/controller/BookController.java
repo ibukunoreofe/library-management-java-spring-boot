@@ -1,6 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.web.controller;
 
-import com.eaproc.tutorials.librarymanagement.annotation.AdminOnlyEndpoint;
+import com.eaproc.tutorials.librarymanagement.config.annotation.AdminOnlyEndpoint;
 import com.eaproc.tutorials.librarymanagement.domain.model.BookEntity;
 import com.eaproc.tutorials.librarymanagement.service.BookService;
 import com.eaproc.tutorials.librarymanagement.web.dto.BookDto;

@@ -1,6 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 
-import com.eaproc.tutorials.librarymanagement.annotation.PublicEndpoint;
+import com.eaproc.tutorials.librarymanagement.config.annotation.PublicEndpoint;
 import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
 import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.service.RoleService;

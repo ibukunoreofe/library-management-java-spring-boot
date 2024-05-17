@@ -1,4 +1,4 @@
-package com.eaproc.tutorials.librarymanagement.filter;
+package com.eaproc.tutorials.librarymanagement.config.filter;
 
 import com.eaproc.tutorials.librarymanagement.service.UserService;
 import com.eaproc.tutorials.librarymanagement.util.JwtTokenUtil;

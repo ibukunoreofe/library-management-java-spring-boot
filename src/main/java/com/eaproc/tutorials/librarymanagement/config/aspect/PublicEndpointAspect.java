@@ -1,11 +1,9 @@
-package com.eaproc.tutorials.librarymanagement.aspect;
+package com.eaproc.tutorials.librarymanagement.config.aspect;
 
-import com.eaproc.tutorials.librarymanagement.annotation.PublicEndpoint;
-import com.eaproc.tutorials.librarymanagement.registry.PublicEndpointRegistry;
+import com.eaproc.tutorials.librarymanagement.config.annotation.PublicEndpoint;
+import com.eaproc.tutorials.librarymanagement.config.registry.PublicEndpointRegistry;
 import jakarta.annotation.PostConstruct;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 

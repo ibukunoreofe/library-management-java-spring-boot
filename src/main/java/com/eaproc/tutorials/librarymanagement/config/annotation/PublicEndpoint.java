@@ -1,4 +1,4 @@
-package com.eaproc.tutorials.librarymanagement.annotation;
+package com.eaproc.tutorials.librarymanagement.config.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

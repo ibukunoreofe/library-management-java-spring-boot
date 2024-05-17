@@ -1,9 +1,8 @@
 package com.eaproc.tutorials.librarymanagement.config;
 
 import com.eaproc.tutorials.librarymanagement.config.providers.CustomAuthenticationProvider;
-import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
-import com.eaproc.tutorials.librarymanagement.filter.CustomAppFilterManager;
-import com.eaproc.tutorials.librarymanagement.security.PublicEndpointRequestMatcher;
+import com.eaproc.tutorials.librarymanagement.config.filter.CustomAppFilterManager;
+import com.eaproc.tutorials.librarymanagement.config.security.PublicEndpointRequestMatcher;
 import com.eaproc.tutorials.librarymanagement.service.UserService;
 import com.eaproc.tutorials.librarymanagement.web.exception.CustomAccessDeniedHandler;
 import com.eaproc.tutorials.librarymanagement.web.exception.CustomAuthenticationEntryPoint;

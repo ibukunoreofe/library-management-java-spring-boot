@@ -1,4 +1,4 @@
-package com.eaproc.tutorials.librarymanagement.registry;
+package com.eaproc.tutorials.librarymanagement.config.registry;
 
 import org.springframework.stereotype.Component;
 

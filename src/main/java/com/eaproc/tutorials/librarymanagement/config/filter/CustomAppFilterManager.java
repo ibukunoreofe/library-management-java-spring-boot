@@ -1,7 +1,6 @@
-package com.eaproc.tutorials.librarymanagement.filter;
+package com.eaproc.tutorials.librarymanagement.config.filter;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
