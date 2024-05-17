@@ -21,16 +21,27 @@ public class UserDataManagerUtil {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-    public void deleteAndCreateSampleUser()
+    public UserDataManagerUtil clearUsersAndRoles()
     {
         userRepository.deleteAll();
         roleRepository.deleteAll();
+        return this;
+    }
 
+    public RoleEntity createUserRole()
+    {
         RoleEntity userRole = new RoleEntity();
         userRole.setId(RoleConstants.USER_ROLE_ID);
         userRole.setName(RoleConstants.USER_ROLE_NAME);
         roleRepository.save(userRole);
+        return userRole;
+    }
+
+    public UserEntity deleteAndCreateSampleUser()
+    {
+        RoleEntity userRole =
+                clearUsersAndRoles()
+                .createUserRole();
 
         UserEntity user = UserEntity.builder()
                 .name("Test User")
@@ -39,6 +50,6 @@ public class UserDataManagerUtil {
                 .roleEntity(userRole)
                 .build();
         userRepository.save(user);
+        return user;
     }
-
 }

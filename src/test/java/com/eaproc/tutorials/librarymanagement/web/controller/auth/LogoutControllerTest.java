@@ -6,6 +6,7 @@ import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.domain.repository.RoleRepository;
 import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
 import com.eaproc.tutorials.librarymanagement.util.JwtTokenUtil;
+import com.eaproc.tutorials.librarymanagement.util.UserDataManagerUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,29 +43,16 @@ public class LogoutControllerTest {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private UserDataManagerUtil userDataManagerUtil;
+
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     private String jwtToken;
 
     @BeforeEach
     public void setUp() {
-        userRepository.deleteAll();
-        roleRepository.deleteAll();
-
-        RoleEntity userRole = new RoleEntity();
-        userRole.setId(RoleConstants.USER_ROLE_ID);
-        userRole.setName("USER");
-        roleRepository.save(userRole);
-
-        UserEntity user = UserEntity.builder()
-                .name("Test User")
-                .email("test@example.com")
-                .password(passwordEncoder.encode("password"))
-                .roleEntity(userRole)
-                .build();
-        userRepository.save(user);
-
-        jwtToken = jwtTokenUtil.generateToken(user.getEmail());
+        jwtToken = jwtTokenUtil.generateToken(userDataManagerUtil.deleteAndCreateSampleUser().getEmail());
     }
 
     @Test

@@ -1,10 +1,10 @@
 package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 
 import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
-import com.eaproc.tutorials.librarymanagement.domain.model.RoleEntity;
 import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.domain.repository.RoleRepository;
 import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
+import com.eaproc.tutorials.librarymanagement.util.UserDataManagerUtil;
 import com.eaproc.tutorials.librarymanagement.web.request.RegistrationRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,17 +42,16 @@ public class RegisterControllerTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UserDataManagerUtil userDataManagerUtil;
+
     @BeforeEach
     public void setUp() {
         // This should not be necessary if seeders runs first
         // however, we have set dirty context here to before class
-        userRepository.deleteAll();
-        roleRepository.deleteAll();
-
-        RoleEntity userRole = new RoleEntity();
-        userRole.setId(RoleConstants.USER_ROLE_ID);
-        userRole.setName("USER");
-        roleRepository.save(userRole);
+        userDataManagerUtil
+                .clearUsersAndRoles()
+                .createUserRole();
     }
 
     @Test
