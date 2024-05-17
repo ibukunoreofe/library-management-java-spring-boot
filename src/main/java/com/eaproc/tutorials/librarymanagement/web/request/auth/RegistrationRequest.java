@@ -1,4 +1,4 @@
-package com.eaproc.tutorials.librarymanagement.web.request;
+package com.eaproc.tutorials.librarymanagement.web.request.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -2,8 +2,8 @@ package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 
 import com.eaproc.tutorials.librarymanagement.annotation.PublicEndpoint;
 import com.eaproc.tutorials.librarymanagement.service.UserService;
-import com.eaproc.tutorials.librarymanagement.web.request.PasswordResetConfirmRequest;
-import com.eaproc.tutorials.librarymanagement.web.request.PasswordResetRequest;
+import com.eaproc.tutorials.librarymanagement.web.request.auth.PasswordResetConfirmRequest;
+import com.eaproc.tutorials.librarymanagement.web.request.auth.PasswordResetRequest;
 import com.eaproc.tutorials.librarymanagement.web.response.ErrorResponse;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;

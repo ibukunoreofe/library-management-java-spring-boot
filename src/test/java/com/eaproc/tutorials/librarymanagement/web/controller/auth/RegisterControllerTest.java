@@ -5,7 +5,7 @@ import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.domain.repository.RoleRepository;
 import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
 import com.eaproc.tutorials.librarymanagement.util.UserDataManagerUtil;
-import com.eaproc.tutorials.librarymanagement.web.request.RegistrationRequest;
+import com.eaproc.tutorials.librarymanagement.web.request.auth.RegistrationRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

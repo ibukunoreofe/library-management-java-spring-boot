@@ -8,7 +8,7 @@ import com.eaproc.tutorials.librarymanagement.service.UserService;
 import com.eaproc.tutorials.librarymanagement.util.JwtTokenUtil;
 import com.eaproc.tutorials.librarymanagement.util.ValidationUtil;
 import com.eaproc.tutorials.librarymanagement.web.mapper.impl.UserMapperImpl;
-import com.eaproc.tutorials.librarymanagement.web.request.RegistrationRequest;
+import com.eaproc.tutorials.librarymanagement.web.request.auth.RegistrationRequest;
 import com.eaproc.tutorials.librarymanagement.web.response.AuthResponse;
 import com.eaproc.tutorials.librarymanagement.web.response.ErrorResponse;
 import jakarta.validation.Valid;

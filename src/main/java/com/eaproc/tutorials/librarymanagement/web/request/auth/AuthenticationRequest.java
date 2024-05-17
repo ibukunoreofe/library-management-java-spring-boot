@@ -1,4 +1,4 @@
-package com.eaproc.tutorials.librarymanagement.web.request;
+package com.eaproc.tutorials.librarymanagement.web.request.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
