@@ -1,5 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.service;
 
+import com.eaproc.tutorials.librarymanagement.config.providers.CustomUserDetails;
 import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         logger.info("Loading userEntity by email: {}", email);
 
         UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() ->
@@ -38,9 +39,15 @@ public class UserService implements UserDetailsService {
 
         logger.info("UserEntity found: {}", userEntity);
 
-        org.springframework.security.core.userdetails.User.UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(email);
+        CustomUserDetails.CustomUserDetailsBuilder builder = CustomUserDetails.withUsername(email);
         builder.password(userEntity.getPassword());
         builder.roles(userEntity.getRoleEntity().getName());
-        return builder.build();
+        CustomUserDetails customUserDetails = builder.build();
+
+        // Extensions
+        customUserDetails.setId( userEntity.getId() );
+        customUserDetails.setName( userEntity.getName() );
+
+        return customUserDetails;
     }
 }

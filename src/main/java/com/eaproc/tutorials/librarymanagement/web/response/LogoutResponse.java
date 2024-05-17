@@ -8,5 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LogoutResponse {
+    private Long userId;
     private String message;
 }
