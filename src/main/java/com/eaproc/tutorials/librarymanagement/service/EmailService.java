@@ -20,6 +20,8 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(to);
         helper.setSubject(subject);
+        helper.setFrom("admin@scadware.com");
+
         helper.setText(body, true);
 
         mailSender.send(message);

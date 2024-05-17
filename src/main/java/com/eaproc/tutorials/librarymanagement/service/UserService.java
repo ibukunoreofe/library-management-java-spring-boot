@@ -67,8 +67,7 @@ public class UserService implements UserDetailsService {
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
             String resetCode = generateResetCode();
-            String encodedResetCode = passwordEncoder.encode(resetCode);
-            user.setRememberToken(encodedResetCode);
+            user.setRememberToken(passwordEncoder.encode(resetCode));
             userRepository.save(user);
 
             // Send email with reset code
@@ -88,8 +87,24 @@ public class UserService implements UserDetailsService {
 
     private void sendResetEmail(UserEntity user, String resetCode) throws MessagingException {
         String subject = "Password Reset Request";
-        String body = String.format("Dear %s,%n%nYour password reset code is: %s%n%nPlease use this code to reset your password.%n%nBest regards,%nYour Company",
-                user.getName(), resetCode);
+        String body = createPasswordResetEmailContent(user.getName(), resetCode);
         emailService.sendEmail(user.getEmail(), subject, body);
+    }
+
+    private String createPasswordResetEmailContent(String userName, String resetCode) {
+        return "<html>" +
+                "<body style='font-family: Arial, sans-serif;'>" +
+                "<div style='text-align: center;'>" +
+                "<h1>Library Management Application</h1>" +
+                "<div style='background-color: #f2f2f2; padding: 20px; border-radius: 10px; display: inline-block;'>" +
+                "<h2>Password Reset Request</h2>" +
+                "<p>Dear " + userName + ",</p>" +
+                "<p>Your password reset code is:</p>" +
+                "<h1 style='color: #333;'>" + resetCode + "</h1>" +
+                "</div>" +
+                "<p style='margin-top: 20px;'>If you didn't request this code, kindly ignore it or report to customer service.</p>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
     }
 }
