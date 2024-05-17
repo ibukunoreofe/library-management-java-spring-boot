@@ -62,7 +62,7 @@ public class UserService implements UserDetailsService {
         return customUserDetails;
     }
 
-    public void resetPasswordRequest(String email) throws MessagingException {
+    public String resetPasswordRequest(String email) throws MessagingException {
         Optional<UserEntity> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
@@ -72,6 +72,8 @@ public class UserService implements UserDetailsService {
 
             // Send email with reset code
             emailService.sendEmail(user.getEmail(), new PasswordResetMail(user.getName(), resetCode));
+
+            return resetCode;
         } else {
             throw new RuntimeException("Email not found");
         }
@@ -83,5 +85,21 @@ public class UserService implements UserDetailsService {
             sb.append(RANDOM.nextInt(10));
         }
         return sb.toString();
+    }
+
+    public void resetPassword(String email, String password, String token) {
+        Optional<UserEntity> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            UserEntity user = userOptional.get();
+            if (passwordEncoder.matches(token, user.getRememberToken())) {
+                user.setPassword(passwordEncoder.encode(password));
+                user.setRememberToken(null);
+                userRepository.save(user);
+            } else {
+                throw new RuntimeException("Invalid token");
+            }
+        } else {
+            throw new RuntimeException("Email not found");
+        }
     }
 }

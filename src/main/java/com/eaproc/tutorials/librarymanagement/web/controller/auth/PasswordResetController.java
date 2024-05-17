@@ -2,6 +2,7 @@ package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 
 import com.eaproc.tutorials.librarymanagement.annotation.PublicEndpoint;
 import com.eaproc.tutorials.librarymanagement.service.UserService;
+import com.eaproc.tutorials.librarymanagement.web.request.PasswordResetConfirmRequest;
 import com.eaproc.tutorials.librarymanagement.web.request.PasswordResetRequest;
 import com.eaproc.tutorials.librarymanagement.web.response.ErrorResponse;
 import jakarta.mail.MessagingException;
@@ -43,6 +44,32 @@ public class PasswordResetController {
             return ResponseEntity.ok(Map.of("message", "Password reset code sent to your email."));
         } catch (MessagingException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("Failed to send email. Please try again."));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+    @PublicEndpoint
+    @PostMapping("/password/reset")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordResetConfirmRequest passwordResetConfirmRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String errors = bindingResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Validation errors: " + errors));
+        }
+
+        if (!passwordResetConfirmRequest.getPassword().equals(passwordResetConfirmRequest.getPasswordConfirmation())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Passwords do not match"));
+        }
+
+        try {
+            userService.resetPassword(
+                    passwordResetConfirmRequest.getEmail(),
+                    passwordResetConfirmRequest.getPassword(),
+                    passwordResetConfirmRequest.getToken()
+            );
+            return ResponseEntity.ok(Map.of("message", "Your password has been reset."));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
         }

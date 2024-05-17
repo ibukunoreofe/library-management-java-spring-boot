@@ -1,6 +1,10 @@
 package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 
+import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
+import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
+import com.eaproc.tutorials.librarymanagement.service.UserService;
 import com.eaproc.tutorials.librarymanagement.util.UserDataManagerUtil;
+import com.eaproc.tutorials.librarymanagement.web.request.PasswordResetConfirmRequest;
 import com.eaproc.tutorials.librarymanagement.web.request.PasswordResetRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +34,12 @@ public class PasswordResetControllerTest {
 
     @Autowired
     private UserDataManagerUtil userDataManagerUtil;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @BeforeEach
     public void setUpOnce() {
@@ -82,5 +92,87 @@ public class PasswordResetControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Password reset code sent to your email."));
+    }
+
+    @Test
+    public void testResetPasswordWithInvalidEmailFormat() throws Exception {
+        PasswordResetConfirmRequest request = new PasswordResetConfirmRequest();
+        request.setEmail("invalid-email");
+        request.setPassword("newpassword");
+        request.setPasswordConfirmation("newpassword");
+        request.setToken("123456");
+
+        mockMvc.perform(post("/api/auth/password/reset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Validation errors: must be a well-formed email address"));
+    }
+
+    @Test
+    public void testResetPasswordWithMissingFields() throws Exception {
+        PasswordResetConfirmRequest request = new PasswordResetConfirmRequest();
+
+        mockMvc.perform(post("/api/auth/password/reset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.allOf(
+                        org.hamcrest.Matchers.containsString("Email is mandatory"),
+                        org.hamcrest.Matchers.containsString("Password is mandatory"),
+                        org.hamcrest.Matchers.containsString("Password confirmation is mandatory"),
+                        org.hamcrest.Matchers.containsString("Token is mandatory")
+                )));
+    }
+
+    @Test
+    public void testResetPasswordWithMismatchedPasswords() throws Exception {
+        PasswordResetConfirmRequest request = new PasswordResetConfirmRequest();
+        request.setEmail("test@example.com");
+        request.setPassword("newpassword");
+        request.setPasswordConfirmation("differentpassword");
+        request.setToken("123456");
+
+        mockMvc.perform(post("/api/auth/password/reset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Passwords do not match"));
+    }
+
+    @Test
+    public void testResetPasswordWithInvalidToken() throws Exception {
+        PasswordResetConfirmRequest request = new PasswordResetConfirmRequest();
+        request.setEmail("test@example.com");
+        request.setPassword("newpassword");
+        request.setPasswordConfirmation("newpassword");
+        request.setToken("000000");
+
+        mockMvc.perform(post("/api/auth/password/reset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid token"));
+    }
+
+    @Test
+    public void testSuccessfulPasswordReset() throws Exception {
+        // Mock the reset request first to set the token
+        String token = userService.resetPasswordRequest("test@example.com"); // Use the actual token from the email sent in a real scenario
+
+        // Fetch the user and get the token from the repository
+        UserEntity user = userRepository.findByEmail("test@example.com").orElseThrow();
+
+        PasswordResetConfirmRequest request = new PasswordResetConfirmRequest();
+        request.setEmail("test@example.com");
+        request.setPassword("newpassword");
+        request.setPasswordConfirmation("newpassword");
+        request.setToken(token);
+
+        mockMvc.perform(post("/api/auth/password/reset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Your password has been reset."));
     }
 }
