@@ -1,8 +1,11 @@
 package com.eaproc.tutorials.librarymanagement.web.controller;
 
+import com.eaproc.tutorials.librarymanagement.annotation.AdminOnlyEndpoint;
 import com.eaproc.tutorials.librarymanagement.domain.model.BookEntity;
 import com.eaproc.tutorials.librarymanagement.service.BookService;
 import com.eaproc.tutorials.librarymanagement.web.dto.BookDto;
+import com.eaproc.tutorials.librarymanagement.web.request.book.CreateBookRequest;
+import com.eaproc.tutorials.librarymanagement.web.request.book.UpdateBookRequest;
 import com.eaproc.tutorials.librarymanagement.web.response.ErrorResponse;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -28,6 +31,7 @@ public class BookController {
     }
 
     @GetMapping
+    @AdminOnlyEndpoint
     public ResponseEntity<List<BookDto>> getAllBooks() {
         List<BookDto> books = bookService.getAllBooks().stream()
                 .map(book -> modelMapper.map(book, BookDto.class))
@@ -36,6 +40,7 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
+    @AdminOnlyEndpoint
     public ResponseEntity<?> getBookById(@PathVariable Long id) {
         Optional<BookEntity> bookEntity = bookService.getBookById(id);
         if (bookEntity.isPresent()) {
@@ -47,16 +52,18 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createBook(@Valid @RequestBody BookDto bookDto) {
-        BookEntity bookEntity = modelMapper.map(bookDto, BookEntity.class);
+    @AdminOnlyEndpoint
+    public ResponseEntity<?> createBook(@Valid @RequestBody CreateBookRequest createBookRequest) {
+        BookEntity bookEntity = modelMapper.map(createBookRequest, BookEntity.class);
         BookEntity createdBook = bookService.createBook(bookEntity);
         BookDto createdBookDto = modelMapper.map(createdBook, BookDto.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBookDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable Long id, @Valid @RequestBody BookDto bookDto) {
-        BookEntity bookEntity = modelMapper.map(bookDto, BookEntity.class);
+    @AdminOnlyEndpoint
+    public ResponseEntity<?> updateBook(@PathVariable Long id, @Valid @RequestBody UpdateBookRequest updateBookRequest) {
+        BookEntity bookEntity = modelMapper.map(updateBookRequest, BookEntity.class);
         Optional<BookEntity> updatedBook = bookService.updateBook(id, bookEntity);
         if (updatedBook.isPresent()) {
             BookDto updatedBookDto = modelMapper.map(updatedBook.get(), BookDto.class);
@@ -67,6 +74,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
+    @AdminOnlyEndpoint
     public ResponseEntity<?> deleteBook(@PathVariable Long id) {
         if (bookService.getBookById(id).isPresent()) {
             bookService.deleteBook(id);

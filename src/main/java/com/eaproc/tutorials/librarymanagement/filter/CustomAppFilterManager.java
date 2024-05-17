@@ -20,8 +20,12 @@ public class CustomAppFilterManager extends OncePerRequestFilter {
     private final List<OncePerRequestFilter> filters;
 
     @Autowired
-    public CustomAppFilterManager(CustomNotFoundFilter customNotFoundFilter, JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.filters = List.of(customNotFoundFilter, jwtAuthenticationFilter);
+    public CustomAppFilterManager(
+                    CustomNotFoundFilter customNotFoundFilter,
+                    JwtAuthenticationFilter jwtAuthenticationFilter,
+                    AdminAccessFilter adminAccessFilter
+    ) {
+        this.filters = List.of(customNotFoundFilter, jwtAuthenticationFilter, adminAccessFilter);
     }
 
     @Override

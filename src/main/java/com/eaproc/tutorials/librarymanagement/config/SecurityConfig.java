@@ -1,6 +1,7 @@
 package com.eaproc.tutorials.librarymanagement.config;
 
 import com.eaproc.tutorials.librarymanagement.config.providers.CustomAuthenticationProvider;
+import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
 import com.eaproc.tutorials.librarymanagement.filter.CustomAppFilterManager;
 import com.eaproc.tutorials.librarymanagement.security.PublicEndpointRequestMatcher;
 import com.eaproc.tutorials.librarymanagement.service.UserService;
@@ -49,6 +50,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint(customAuthenticationEntryPoint) // Use custom authentication entry point
                 )
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        //  Moved to using filters instead
+                        //  .requestMatchers("/api/books/**").hasRole(RoleConstants.ADMIN_ROLE_NAME) // Restrict access to books endpoints to ADMIN role
                         .requestMatchers(publicEndpointRequestMatcher).permitAll() // Allow public access to specific endpoints
                         .anyRequest().authenticated() // Require authentication for all other requests
                 )
