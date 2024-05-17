@@ -1,5 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.service;
 
+import com.eaproc.tutorials.librarymanagement.mail.IMailable;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,14 +16,14 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
-    public void sendEmail(String to, String subject, String body) throws MessagingException {
+    public void sendEmail(String to, IMailable mailable) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(to);
-        helper.setSubject(subject);
+        helper.setSubject(mailable.getSubject());
         helper.setFrom("admin@scadware.com");
 
-        helper.setText(body, true);
+        helper.setText(mailable.toString(), true);
 
         mailSender.send(message);
     }

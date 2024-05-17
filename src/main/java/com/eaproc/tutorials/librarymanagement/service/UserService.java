@@ -3,10 +3,10 @@ package com.eaproc.tutorials.librarymanagement.service;
 import com.eaproc.tutorials.librarymanagement.config.providers.CustomUserDetails;
 import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
+import com.eaproc.tutorials.librarymanagement.mail.PasswordResetMail;
 import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,7 +71,7 @@ public class UserService implements UserDetailsService {
             userRepository.save(user);
 
             // Send email with reset code
-            sendResetEmail(user, resetCode);
+            emailService.sendEmail(user.getEmail(), new PasswordResetMail(user.getName(), resetCode));
         } else {
             throw new RuntimeException("Email not found");
         }
@@ -83,28 +83,5 @@ public class UserService implements UserDetailsService {
             sb.append(RANDOM.nextInt(10));
         }
         return sb.toString();
-    }
-
-    private void sendResetEmail(UserEntity user, String resetCode) throws MessagingException {
-        String subject = "Password Reset Request";
-        String body = createPasswordResetEmailContent(user.getName(), resetCode);
-        emailService.sendEmail(user.getEmail(), subject, body);
-    }
-
-    private String createPasswordResetEmailContent(String userName, String resetCode) {
-        return "<html>" +
-                "<body style='font-family: Arial, sans-serif;'>" +
-                "<div style='text-align: center;'>" +
-                "<h1>Library Management Application</h1>" +
-                "<div style='background-color: #f2f2f2; padding: 20px; border-radius: 10px; display: inline-block;'>" +
-                "<h2>Password Reset Request</h2>" +
-                "<p>Dear " + userName + ",</p>" +
-                "<p>Your password reset code is:</p>" +
-                "<h1 style='color: #333;'>" + resetCode + "</h1>" +
-                "</div>" +
-                "<p style='margin-top: 20px;'>If you didn't request this code, kindly ignore it or report to customer service.</p>" +
-                "</div>" +
-                "</body>" +
-                "</html>";
     }
 }

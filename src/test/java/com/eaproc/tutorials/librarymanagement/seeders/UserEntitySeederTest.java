@@ -2,7 +2,6 @@ package com.eaproc.tutorials.librarymanagement.seeders;
 
 import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
 import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
-import com.eaproc.tutorials.librarymanagement.service.RoleService;
 import com.eaproc.tutorials.librarymanagement.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,6 @@ public class UserEntitySeederTest {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private RoleService roleService;
 
     @Test
     @Transactional
