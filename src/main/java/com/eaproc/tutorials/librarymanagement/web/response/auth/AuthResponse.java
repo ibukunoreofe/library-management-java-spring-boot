@@ -1,10 +1,9 @@
-package com.eaproc.tutorials.librarymanagement.web.response;
+package com.eaproc.tutorials.librarymanagement.web.response.auth;
 
 import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.util.JwtTokenUtil;
 import com.eaproc.tutorials.librarymanagement.web.dto.UserDto;
 import com.eaproc.tutorials.librarymanagement.web.mapper.Mapper;
-import com.eaproc.tutorials.librarymanagement.web.mapper.impl.UserMapperImpl;
 import lombok.Getter;
 import lombok.Setter;
 

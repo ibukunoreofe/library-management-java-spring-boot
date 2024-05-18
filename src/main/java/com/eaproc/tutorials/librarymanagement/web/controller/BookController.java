@@ -7,8 +7,13 @@ import com.eaproc.tutorials.librarymanagement.web.dto.BookDto;
 import com.eaproc.tutorials.librarymanagement.web.request.book.CreateBookRequest;
 import com.eaproc.tutorials.librarymanagement.web.request.book.UpdateBookRequest;
 import com.eaproc.tutorials.librarymanagement.web.response.ErrorResponse;
+import com.eaproc.tutorials.librarymanagement.web.response.PaginatedResponse;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,11 +37,22 @@ public class BookController {
 
     @GetMapping
     @AdminOnlyEndpoint
-    public ResponseEntity<List<BookDto>> getAllBooks() {
-        List<BookDto> books = bookService.getAllBooks().stream()
-                .map(book -> modelMapper.map(book, BookDto.class))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(books);
+    public ResponseEntity<?> getAllBooks(@RequestParam(value = "paginate", required = false, defaultValue = "false") boolean paginate,
+                                         @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                         @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+        if (paginate) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("title").ascending());
+            Page<BookEntity> bookPage = bookService.getAllBooks(pageable);
+            List<BookDto> books = bookPage.getContent().stream()
+                    .map(book -> modelMapper.map(book, BookDto.class))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(new PaginatedResponse<>(books, bookPage.getTotalPages(), bookPage.getTotalElements()));
+        } else {
+            List<BookDto> books = bookService.getAllBooks().stream()
+                    .map(book -> modelMapper.map(book, BookDto.class))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(books);
+        }
     }
 
     @GetMapping("/{id}")

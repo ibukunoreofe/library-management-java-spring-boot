@@ -1,6 +1,6 @@
 package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 
-import com.eaproc.tutorials.librarymanagement.web.response.LogoutResponse;
+import com.eaproc.tutorials.librarymanagement.web.response.auth.LogoutResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -2,7 +2,8 @@ package com.eaproc.tutorials.librarymanagement.service;
 
 import com.eaproc.tutorials.librarymanagement.domain.model.BookEntity;
 import com.eaproc.tutorials.librarymanagement.domain.repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +30,10 @@ public class BookService {
 
     public List<BookEntity> getAllBooks() {
         return bookRepository.findAll();
+    }
+
+    public Page<BookEntity> getAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
     public Optional<BookEntity> getBookById(Long id) {

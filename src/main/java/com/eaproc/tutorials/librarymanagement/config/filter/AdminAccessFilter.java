@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.eaproc.tutorials.librarymanagement.config.providers.CustomAuthenticationProvider.authenticated;
+
 @Component
 public class AdminAccessFilter extends OncePerRequestFilter {
 
@@ -31,7 +33,7 @@ public class AdminAccessFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        if (adminEndpointRegistry.isAdminEndpoint(path)) {
+        if ( authenticated() && adminEndpointRegistry.isAdminEndpoint(path)) {
             UserDetails userDetails = CustomAuthenticationProvider.auth();
             // "ROLE_"  is automatically added to role names as authority
             if (userDetails != null && userDetails.getAuthorities().stream().noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals( "ROLE_" + RoleConstants.ADMIN_ROLE_NAME))) {

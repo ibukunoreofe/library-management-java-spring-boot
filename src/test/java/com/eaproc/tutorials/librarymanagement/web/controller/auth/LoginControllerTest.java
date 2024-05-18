@@ -5,7 +5,7 @@ import com.eaproc.tutorials.librarymanagement.service.UserService;
 import com.eaproc.tutorials.librarymanagement.util.JwtTokenUtil;
 import com.eaproc.tutorials.librarymanagement.web.mapper.impl.UserMapperImpl;
 import com.eaproc.tutorials.librarymanagement.web.request.auth.AuthenticationRequest;
-import com.eaproc.tutorials.librarymanagement.web.response.AuthResponse;
+import com.eaproc.tutorials.librarymanagement.web.response.auth.AuthResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

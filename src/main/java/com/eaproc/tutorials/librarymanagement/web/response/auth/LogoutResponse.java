@@ -1,4 +1,4 @@
-package com.eaproc.tutorials.librarymanagement.web.response;
+package com.eaproc.tutorials.librarymanagement.web.response.auth;
 
 import lombok.*;
 
