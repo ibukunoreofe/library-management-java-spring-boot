@@ -1,8 +1,12 @@
-package com.eaproc.tutorials.librarymanagement.web.controller;
+package com.eaproc.tutorials.librarymanagement.web.controller.integrated.dependants;
 
-import com.eaproc.tutorials.librarymanagement.domain.model.*;
-import com.eaproc.tutorials.librarymanagement.domain.repository.*;
-import com.eaproc.tutorials.librarymanagement.web.request.auth.AuthenticationRequest;
+import com.eaproc.tutorials.librarymanagement.domain.model.BookEntity;
+import com.eaproc.tutorials.librarymanagement.domain.model.CheckoutEntity;
+import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
+import com.eaproc.tutorials.librarymanagement.domain.repository.BookRepository;
+import com.eaproc.tutorials.librarymanagement.domain.repository.CheckoutRepository;
+import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
+import com.eaproc.tutorials.librarymanagement.web.controller.integrated.CreateAndEnsureAdminLoginTest;
 import com.eaproc.tutorials.librarymanagement.web.request.checkout.CheckoutRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,11 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class CheckoutControllerTest {
 
     @Autowired
@@ -40,38 +40,15 @@ public class CheckoutControllerTest {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private CheckoutRepository checkoutRepository;
 
     private String adminToken;
 
     @BeforeEach
     public void setUp() throws Exception {
-        // Setup admin user and roles
-        RoleEntity adminRole = RoleEntity.builder().id(RoleConstants.ADMIN_ROLE_ID).name(RoleConstants.ADMIN_ROLE_NAME).build();
-        roleRepository.save(adminRole);
-
-        UserEntity adminUser = new UserEntity();
-        adminUser.setEmail("admin@example.com");
-        adminUser.setPassword(passwordEncoder.encode("password"));
-        adminUser.setRoleEntity(adminRole);
-        adminUser.setName("Admin User");
-        userRepository.save(adminUser);
-
-        // Authenticate admin user to get token
-        AuthenticationRequest authRequest = new AuthenticationRequest("admin@example.com", "password");
-        String authResponse = mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(authRequest)))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        adminToken = objectMapper.readTree(authResponse).get("token").asText();
+        adminToken = CreateAndEnsureAdminLoginTest.getAdminToken();
+        checkoutRepository.deleteAll(); // it seems at this point seeders are always running, meaning there will be books in library
+        bookRepository.deleteAll(); // it seems at this point seeders are always running, meaning there will be books in library
     }
 
     @Test
@@ -86,7 +63,7 @@ public class CheckoutControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(checkoutRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.message").value("Book checked out successfully"));
+                .andExpect(jsonPath("$.bookTitle").value("Title1"));
     }
 
     @Test
