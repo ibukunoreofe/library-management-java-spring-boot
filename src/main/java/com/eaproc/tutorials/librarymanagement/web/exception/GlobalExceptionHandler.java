@@ -1,8 +1,9 @@
-package com.eaproc.tutorials.librarymanagement.exception;
+package com.eaproc.tutorials.librarymanagement.web.exception;
 
-import com.eaproc.tutorials.librarymanagement.web.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,9 +29,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        fieldError -> fieldError.getDefaultMessage(),
+                        (existing, replacement) -> existing
+                ));
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
@@ -39,6 +45,11 @@ public class GlobalExceptionHandler {
         errorDetails.put("error", "Resource not found");
         errorDetails.put("message", ex.getMessage());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleNoHandlerFoundException(HttpMessageNotReadableException ex, WebRequest request) {
+        return new ResponseEntity<>(Map.of("error","Unprocessable Entity!", "message", ex.getMessage() ), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
