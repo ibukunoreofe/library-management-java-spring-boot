@@ -2,6 +2,7 @@ package com.eaproc.tutorials.librarymanagement.service;
 
 import com.eaproc.tutorials.librarymanagement.domain.model.BookEntity;
 import com.eaproc.tutorials.librarymanagement.domain.repository.BookRepository;
+import com.eaproc.tutorials.librarymanagement.domain.repository.CheckoutRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,11 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-    public BookService(BookRepository bookRepository) {
+    private CheckoutRepository checkoutRepository;
+
+    public BookService(BookRepository bookRepository, CheckoutRepository checkoutRepository) {
         this.bookRepository = bookRepository;
+        this.checkoutRepository = checkoutRepository;
     }
 
     public void saveBook(BookEntity bookEntity) {
@@ -52,16 +56,21 @@ public class BookService {
         return bookRepository.save(bookEntity);
     }
 
-    public Optional<BookEntity> updateBook(Long id, BookEntity bookEntity) {
-        return bookRepository.findById(id)
-                .map(existingBook -> {
-                    existingBook.setTitle(bookEntity.getTitle());
-                    existingBook.setAuthor(bookEntity.getAuthor());
-                    existingBook.setIsbn(bookEntity.getIsbn());
-                    existingBook.setPublishedAt(bookEntity.getPublishedAt());
-                    existingBook.setCopies(bookEntity.getCopies());
-                    return bookRepository.save(existingBook);
-                });
+    public Optional<BookEntity> updateBook(Long id, BookEntity updatedBook) {
+        long checkedOutBooks = checkoutRepository.countCheckedOutBooks(id);
+        if (updatedBook.getCopies() < checkedOutBooks) {
+            throw new IllegalArgumentException("Number of copies cannot be less than the number of books currently checked out which is %d.".formatted(checkedOutBooks));
+        }
+
+        Optional<BookEntity> existingBookOpt = bookRepository.findById(id);
+        if (existingBookOpt.isPresent()) {
+            BookEntity existingBook = existingBookOpt.get();
+            updatedBook.setId(id);
+            updatedBook.setCreatedAt(existingBook.getCreatedAt());  // Ensure createdAt is preserved
+            return Optional.of(bookRepository.save(updatedBook));
+        } else {
+            return Optional.empty();
+        }
     }
 
     public void deleteBook(Long id) {

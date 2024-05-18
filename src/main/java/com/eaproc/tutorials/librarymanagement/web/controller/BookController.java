@@ -92,13 +92,17 @@ public class BookController {
     @PutMapping("/{id}")
     @AdminOnlyEndpoint
     public ResponseEntity<?> updateBook(@PathVariable Long id, @Valid @RequestBody BookRequest updateBookRequest) {
-        BookEntity bookEntity = modelMapper.map(updateBookRequest, BookEntity.class);
-        Optional<BookEntity> updatedBook = bookService.updateBook(id, bookEntity);
-        if (updatedBook.isPresent()) {
-            BookDto updatedBookDto = modelMapper.map(updatedBook.get(), BookDto.class);
-            return ResponseEntity.ok(updatedBookDto);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("Book not found"));
+        try {
+            BookEntity bookEntity = modelMapper.map(updateBookRequest, BookEntity.class);
+            Optional<BookEntity> updatedBook = bookService.updateBook(id, bookEntity);
+            if (updatedBook.isPresent()) {
+                BookDto updatedBookDto = modelMapper.map(updatedBook.get(), BookDto.class);
+                return ResponseEntity.ok(updatedBookDto);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("Book not found"));
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
         }
     }
 
