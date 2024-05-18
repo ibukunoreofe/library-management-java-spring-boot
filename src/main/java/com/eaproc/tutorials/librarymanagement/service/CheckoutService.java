@@ -50,7 +50,7 @@ public class CheckoutService {
     }
 
     @Transactional
-    public Optional<CheckoutEntity> returnBook(Long checkoutId) {
+    public CheckoutEntity returnBook(Long checkoutId) {
         Optional<CheckoutEntity> checkoutEntityOptional = checkoutRepository.findById(checkoutId);
         if (checkoutEntityOptional.isEmpty()) {
             throw new RuntimeException("Checkout not found");
@@ -62,6 +62,6 @@ public class CheckoutService {
         }
 
         checkoutEntity.setReturnDateTimeUtc(LocalDateTime.now(ZoneOffset.UTC));
-        return Optional.of(checkoutRepository.save(checkoutEntity));
+        return checkoutRepository.save(checkoutEntity);
     }
 }

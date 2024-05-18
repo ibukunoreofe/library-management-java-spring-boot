@@ -41,12 +41,8 @@ public class CheckoutController {
     @PatchMapping("/{checkout_id}")
     public ResponseEntity<?> returnBook(@PathVariable("checkout_id") Long checkoutId) {
         try {
-            Optional<CheckoutEntity> returnedCheckout = checkoutService.returnBook(checkoutId);
-            if (returnedCheckout.isPresent()) {
-                return ResponseEntity.ok(modelMapper.map(returnedCheckout.get(), CheckoutDto.class));
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("Checkout not found"));
-            }
+            CheckoutEntity returnedCheckout = checkoutService.returnBook(checkoutId);
+            return ResponseEntity.ok(modelMapper.map(returnedCheckout, CheckoutDto.class));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
         }

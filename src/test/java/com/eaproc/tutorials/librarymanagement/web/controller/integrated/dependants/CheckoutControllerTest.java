@@ -9,8 +9,7 @@ import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
 import com.eaproc.tutorials.librarymanagement.web.controller.integrated.CreateAndEnsureAdminLoginTest;
 import com.eaproc.tutorials.librarymanagement.web.request.checkout.CheckoutRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CheckoutControllerTest {
 
     @Autowired
@@ -43,6 +43,7 @@ public class CheckoutControllerTest {
     private CheckoutRepository checkoutRepository;
 
     private String adminToken;
+    private Long checkoutId;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -52,6 +53,7 @@ public class CheckoutControllerTest {
     }
 
     @Test
+    @Order(1)
     public void testCheckoutBook() throws Exception {
         BookEntity book = new BookEntity(null, "Title1", "Author1", "1234567890", new Date(), 10, null, null);
         book = bookRepository.save(book);
@@ -63,10 +65,12 @@ public class CheckoutControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(checkoutRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.bookTitle").value("Title1"));
+                .andExpect(jsonPath("$.bookTitle").value("Title1"))
+                .andExpect(jsonPath("$.returnDateTimeUtc").doesNotExist());
     }
 
     @Test
+    @Order(2)
     public void testCheckoutBookNotFound() throws Exception {
         CheckoutRequest checkoutRequest = new CheckoutRequest(999L);
 
@@ -79,6 +83,7 @@ public class CheckoutControllerTest {
     }
 
     @Test
+    @Order(3)
     public void testCheckoutBookNoCopiesAvailable() throws Exception {
         BookEntity book = new BookEntity(null, "Title1", "Author1", "1234567890", new Date(), 1, null, null);
         book = bookRepository.save(book);
@@ -98,4 +103,5 @@ public class CheckoutControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("No copies of the book are available for checkout"));
     }
+
 }
