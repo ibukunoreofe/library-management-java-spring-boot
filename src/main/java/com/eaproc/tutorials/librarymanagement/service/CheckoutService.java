@@ -68,4 +68,8 @@ public class CheckoutService {
     public int countCheckedOutBooks(Long bookId) {
         return (int) checkoutRepository.countCheckedOutBooks(bookId);
     }
+
+    public int countTimesCheckedOutAndReturned(Long bookId) {
+        return checkoutRepository.countByBookIdAndReturnDateTimeUtcIsNotNull(bookId);
+    }
 }
