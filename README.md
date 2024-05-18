@@ -45,17 +45,22 @@ The Library Management System is a comprehensive application that allows users t
 
 ## Technologies Used
 
-- **Java 17**
+- **Java 22**
 - **Spring Boot 3.2.5**
 - **Spring Security**
 - **Spring Data JPA**
 - **Hibernate**
 - **H2 Database (for testing)**
 - **PostgreSQL (for production)**
-- **ModelMapper**
+- **ModelMapper 2.4.4**
 - **JUnit 5**
 - **Mockito**
 - **Jackson**
+- **JSON Web Tokens (JWT)**
+- **JavaMailSender**
+- **Lombok**
+- **JavaFaker**
+- **Maven 3.9.6 or later**
 
 
 ## Installation
