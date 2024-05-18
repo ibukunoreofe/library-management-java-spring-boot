@@ -9,6 +9,8 @@ import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 @Service
@@ -45,5 +47,21 @@ public class CheckoutService {
         checkoutEntity.setBookEntity(bookEntity);
         checkoutEntity.setUserEntity(userEntity);
         return checkoutRepository.save(checkoutEntity);
+    }
+
+    @Transactional
+    public Optional<CheckoutEntity> returnBook(Long checkoutId) {
+        Optional<CheckoutEntity> checkoutEntityOptional = checkoutRepository.findById(checkoutId);
+        if (checkoutEntityOptional.isEmpty()) {
+            throw new RuntimeException("Checkout not found");
+        }
+
+        CheckoutEntity checkoutEntity = checkoutEntityOptional.get();
+        if (checkoutEntity.getReturnDateTimeUtc() != null) {
+            throw new RuntimeException("Book already returned");
+        }
+
+        checkoutEntity.setReturnDateTimeUtc(LocalDateTime.now(ZoneOffset.UTC));
+        return Optional.of(checkoutRepository.save(checkoutEntity));
     }
 }

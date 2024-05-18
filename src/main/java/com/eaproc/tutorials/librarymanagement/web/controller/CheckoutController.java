@@ -14,6 +14,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/checkouts")
 public class CheckoutController {
@@ -31,6 +33,20 @@ public class CheckoutController {
         try {
             CheckoutEntity checkoutEntity = checkoutService.checkoutBook(checkoutRequest.getBookId(), user.getUsername());
             return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(checkoutEntity, CheckoutDto.class));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+    @PatchMapping("/{checkout_id}")
+    public ResponseEntity<?> returnBook(@PathVariable("checkout_id") Long checkoutId) {
+        try {
+            Optional<CheckoutEntity> returnedCheckout = checkoutService.returnBook(checkoutId);
+            if (returnedCheckout.isPresent()) {
+                return ResponseEntity.ok(modelMapper.map(returnedCheckout.get(), CheckoutDto.class));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("Checkout not found"));
+            }
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
         }
