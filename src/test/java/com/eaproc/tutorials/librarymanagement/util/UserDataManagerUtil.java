@@ -37,6 +37,20 @@ public class UserDataManagerUtil {
         return userRole;
     }
 
+    public UserEntity findAdmin(String adminEmail)
+    {
+        return userRepository.findByEmail(adminEmail).orElse(null);
+    }
+
+    public RoleEntity createAdminRole()
+    {
+        RoleEntity userRole = new RoleEntity();
+        userRole.setId(RoleConstants.ADMIN_ROLE_ID);
+        userRole.setName(RoleConstants.ADMIN_ROLE_NAME);
+        roleRepository.save(userRole);
+        return userRole;
+    }
+
     public UserEntity deleteAndCreateSampleUser()
     {
         RoleEntity userRole =

@@ -1,8 +1,5 @@
 package com.eaproc.tutorials.librarymanagement.web.controller.auth;
 
-import com.eaproc.tutorials.librarymanagement.domain.model.RoleConstants;
-import com.eaproc.tutorials.librarymanagement.domain.model.RoleEntity;
-import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.domain.repository.RoleRepository;
 import com.eaproc.tutorials.librarymanagement.domain.repository.UserRepository;
 import com.eaproc.tutorials.librarymanagement.util.JwtTokenUtil;

@@ -19,6 +19,9 @@ public class UserSeeder {
     @Value("${admin.email:admin@example.com}")
     private String adminEmail;
 
+    @Value("${admin.password:password}")
+    private String adminPassword;
+
     private final PasswordEncoder passwordEncoder;
 
     public UserSeeder(PasswordEncoder passwordEncoder) {
@@ -38,7 +41,7 @@ public class UserSeeder {
             UserEntity adminUserEntity = userService.findUserByEmail(adminEmail).orElse(null);
 
             if (adminUserEntity == null) {
-                String encryptedPassword = passwordEncoder.encode("password");
+                String encryptedPassword = passwordEncoder.encode(adminPassword);
 
                 adminUserEntity = new UserEntity();
                 adminUserEntity.setName("Admin"); // You can set a default name or make it configurable

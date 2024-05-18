@@ -5,6 +5,7 @@ import com.eaproc.tutorials.librarymanagement.domain.model.UserEntity;
 import com.eaproc.tutorials.librarymanagement.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +17,12 @@ public class UserEntitySeederTest {
     @Autowired
     private UserService userService;
 
+    @Value("${admin.email:admin@example.com}")
+    private String adminEmail;
+
     @Test
     @Transactional
     public void testAdminUserIsPresent() {
-        String adminEmail = "admin@example.com"; // Or get it from the property file
         UserEntity adminUserEntity = userService.findUserByEmail(adminEmail).orElse(null);
 
         assertThat(adminUserEntity).isNotNull();
