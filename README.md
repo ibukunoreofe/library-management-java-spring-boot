@@ -591,3 +591,11 @@ The application provides a set of RESTful endpoints for managing the library sys
       "totalItems": 1
     }
     ```
+
+## License
+
+This project is licensed under the MIT License. You are free to use, modify, and distribute this software, provided that you include the original license and give credit to the original author.
+
+## Author
+
+This project was created and is maintained by [Ibukun Bello](https://github.com/ibukunoreofe).
