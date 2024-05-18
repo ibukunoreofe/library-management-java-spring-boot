@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Entity
 @Table(name = "checkouts")
@@ -25,13 +26,13 @@ public class CheckoutEntity {
     @JoinColumn(name = "book_id", nullable = false)
     private BookEntity bookEntity;
 
-    @Column(name = "checkout_date_time_utc", nullable = false)
+    @Column(name = "checkout_date_time_utc", updatable = false, nullable = false)
     private LocalDateTime checkoutDateTimeUtc;
 
     @Column(name = "return_date_time_utc")
     private LocalDateTime returnDateTimeUtc;
 
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -39,9 +40,10 @@ public class CheckoutEntity {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = updatedAt = LocalDateTime.now();
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+        checkoutDateTimeUtc = LocalDateTime.now(ZoneOffset.UTC);
     }
-
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
