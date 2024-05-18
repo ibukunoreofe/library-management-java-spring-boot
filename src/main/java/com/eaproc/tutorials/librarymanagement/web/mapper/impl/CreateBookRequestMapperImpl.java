@@ -2,7 +2,7 @@ package com.eaproc.tutorials.librarymanagement.web.mapper.impl;
 
 import com.eaproc.tutorials.librarymanagement.domain.model.BookEntity;
 import com.eaproc.tutorials.librarymanagement.web.mapper.Mapper;
-import com.eaproc.tutorials.librarymanagement.web.request.book.CreateBookRequest;
+import com.eaproc.tutorials.librarymanagement.web.request.book.BookRequest;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.spi.MappingContext;
@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 
 @Component
 public class CreateBookRequestMapperImpl
-        implements Mapper<CreateBookRequest, BookEntity>,
-        Converter<CreateBookRequest, BookEntity> {
+        implements Mapper<BookRequest, BookEntity>,
+        Converter<BookRequest, BookEntity> {
 
     private final ModelMapper modelMapper;
     private static final Logger logger = Logger.getLogger(CreateBookRequestMapperImpl.class.getName());
@@ -26,18 +26,18 @@ public class CreateBookRequestMapperImpl
     }
 
     @Override
-    public BookEntity mapTo(CreateBookRequest createBookRequest) {
+    public BookEntity mapTo(BookRequest createBookRequest) {
         return modelMapper.map(createBookRequest, BookEntity.class);
     }
 
     @Override
-    public CreateBookRequest mapFrom(BookEntity bookEntity) {
-        return modelMapper.map(bookEntity, CreateBookRequest.class);
+    public BookRequest mapFrom(BookEntity bookEntity) {
+        return modelMapper.map(bookEntity, BookRequest.class);
     }
 
     @Override
-    public BookEntity convert(MappingContext<CreateBookRequest, BookEntity> context) {
-        CreateBookRequest source = context.getSource();
+    public BookEntity convert(MappingContext<BookRequest, BookEntity> context) {
+        BookRequest source = context.getSource();
         BookEntity destination = context.getDestination();
 
         // Perform the mapping

@@ -14,7 +14,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateBookRequest {
+public class BookRequest {
 
     @NotBlank(message = "Title is mandatory")
     @Size(min = 3, max = 255, message = "Title must be between 3 and 255 characters")

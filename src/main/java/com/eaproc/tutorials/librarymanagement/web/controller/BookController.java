@@ -4,8 +4,7 @@ import com.eaproc.tutorials.librarymanagement.config.annotation.AdminOnlyEndpoin
 import com.eaproc.tutorials.librarymanagement.domain.model.BookEntity;
 import com.eaproc.tutorials.librarymanagement.service.BookService;
 import com.eaproc.tutorials.librarymanagement.web.dto.BookDto;
-import com.eaproc.tutorials.librarymanagement.web.request.book.CreateBookRequest;
-import com.eaproc.tutorials.librarymanagement.web.request.book.UpdateBookRequest;
+import com.eaproc.tutorials.librarymanagement.web.request.book.BookRequest;
 import com.eaproc.tutorials.librarymanagement.web.response.ErrorResponse;
 import com.eaproc.tutorials.librarymanagement.web.response.PaginatedResponse;
 import jakarta.validation.Valid;
@@ -82,7 +81,7 @@ public class BookController {
 
     @PostMapping
     @AdminOnlyEndpoint
-    public ResponseEntity<?> createBook(@Valid @RequestBody CreateBookRequest createBookRequest) {
+    public ResponseEntity<?> createBook(@Valid @RequestBody BookRequest createBookRequest) {
         BookEntity bookEntity = modelMapper.map(createBookRequest, BookEntity.class);
 
         BookEntity createdBook = bookService.createBook(bookEntity);
@@ -92,7 +91,7 @@ public class BookController {
 
     @PutMapping("/{id}")
     @AdminOnlyEndpoint
-    public ResponseEntity<?> updateBook(@PathVariable Long id, @Valid @RequestBody UpdateBookRequest updateBookRequest) {
+    public ResponseEntity<?> updateBook(@PathVariable Long id, @Valid @RequestBody BookRequest updateBookRequest) {
         BookEntity bookEntity = modelMapper.map(updateBookRequest, BookEntity.class);
         Optional<BookEntity> updatedBook = bookService.updateBook(id, bookEntity);
         if (updatedBook.isPresent()) {
