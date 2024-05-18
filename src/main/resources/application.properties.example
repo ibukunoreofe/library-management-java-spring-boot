@@ -1,0 +1,43 @@
+spring.application.name=Library Management App
+admin.email=admin@example.com
+admin.password=password
+
+# PostgreSQL Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/library_db
+spring.datasource.username=postgres
+spring.datasource.password=*******
+
+# JPA Hibernate ddl auto (create, create-drop, validate, update)
+spring.jpa.hibernate.ddl-auto=update
+
+# Log the SQL statements
+spring.jpa.show-sql=false
+
+# Show and Format SQL statements
+spring.jpa.properties.hibernate.format_sql=false
+
+# Log the parameters passed to SQL statements
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+
+# Health check
+management.endpoints.web.exposure.include=health,info
+management.endpoint.health.show-details=always
+
+# JWT your_base64_encoded_secret_key
+jwt.secret=******************************
+
+# 1 hour in milliseconds
+jwt.tokenValidity=3600000
+
+spring.mail.host=sandbox.smtp.mailtrap.io
+spring.mail.port=587
+spring.mail.username=************
+spring.mail.password=************
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=false
+spring.mail.properties.mail.smtp.starttls.required=false
+spring.mail.properties.mail.smtp.connectiontimeout=5000
+spring.mail.properties.mail.smtp.timeout=3000
+spring.mail.properties.mail.smtp.writetimeout=5000
+spring.mail.properties.mail.smtp.ssl.checkserveridentity=false

@@ -1,0 +1,142 @@
+# Authentication - Login
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "password"
+}
+
+###
+
+# Authentication - Register
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "New User",
+  "email": "newuser@example.com",
+  "password": "password123"
+}
+
+###
+
+# Authentication - Logout
+POST http://localhost:8080/api/auth/logout
+Authorization: Bearer {{adminToken}}
+
+###
+
+# Authentication - Password Reset Request
+POST http://localhost:8080/api/auth/password/reset-request
+Content-Type: application/json
+
+{
+  "email": "user@example.com"
+}
+
+###
+
+# Authentication - Password Reset
+POST http://localhost:8080/api/auth/password/reset
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "newPassword123",
+  "password_confirmation": "newPassword123",
+  "token": "123456"
+}
+
+###
+
+# Books - Get All Books (Paginated)
+GET http://localhost:8080/api/books?paginate=true&page=0&size=10
+Authorization: Bearer {{adminToken}}
+
+###
+
+# Books - Get Book by ID
+GET http://localhost:8080/api/books/1
+Authorization: Bearer {{adminToken}}
+
+###
+
+# Books - Create Book
+POST http://localhost:8080/api/books
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "New Book Title",
+  "author": "New Author",
+  "isbn": "1234567890",
+  "publishedAt": "2023-01-01",
+  "copies": 10
+}
+
+###
+
+# Books - Update Book
+PUT http://localhost:8080/api/books/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Updated Book Title",
+  "author": "Updated Author",
+  "isbn": "1234567890",
+  "publishedAt": "2023-01-01",
+  "copies": 5
+}
+
+###
+
+# Books - Delete Book
+DELETE http://localhost:8080/api/books/1
+Authorization: Bearer {{adminToken}}
+
+###
+
+# Reports - Get All Books (Paginated)
+GET http://localhost:8080/api/reports/books?paginate=true&page=0&size=10&search=
+Authorization: Bearer {{adminToken}}
+
+###
+
+# Reports - Get Books Pending Return (Paginated)
+GET http://localhost:8080/api/reports/books/pending-return?paginate=true&page=0&size=10&search=
+Authorization: Bearer {{adminToken}}
+
+###
+
+# Reports - Get Returned Books (Paginated)
+GET http://localhost:8080/api/reports/books/returned?paginate=true&page=0&size=10&search=
+Authorization: Bearer {{adminToken}}
+
+###
+
+# Checkouts - Checkout Book
+POST http://localhost:8080/api/checkouts
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "bookId": 1
+}
+
+###
+
+# Checkouts - Return Book
+PATCH http://localhost:8080/api/checkouts/1
+Authorization: Bearer {{adminToken}}
+
+###
+
+# Health - Actuator Health
+GET http://localhost:8080/actuator/health
+
+###
+
+# Health - Actuator Info
+GET http://localhost:8080/actuator/info
