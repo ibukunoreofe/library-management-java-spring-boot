@@ -40,6 +40,14 @@ public class BookService {
         return bookRepository.findById(id);
     }
 
+    public Page<BookEntity> searchBooks(String searchValue, Pageable pageable) {
+        return bookRepository.findByTitleContainingOrIsbnContaining(searchValue, searchValue, pageable);
+    }
+
+    public List<BookEntity> searchBooks(String searchValue) {
+        return bookRepository.findByTitleContainingOrIsbnContaining(searchValue, searchValue);
+    }
+
     public BookEntity createBook(BookEntity bookEntity) {
         return bookRepository.save(bookEntity);
     }

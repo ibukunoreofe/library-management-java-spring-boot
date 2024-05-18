@@ -37,6 +37,9 @@ public class CreateBookRequest {
     @Max(value = 20000, message = "Copies must not exceed 20000")
     private Integer copies;
 
+    /**
+     * Adding this allowed the mapper to autodetect the As Date part.
+     */
     public Date getPublishedAtAsDate() {
         return Date.from(getPublishedAt().atStartOfDay(ZoneId.systemDefault()).toInstant());
     }

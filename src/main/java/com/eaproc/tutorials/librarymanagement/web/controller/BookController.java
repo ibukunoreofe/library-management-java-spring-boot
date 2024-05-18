@@ -39,18 +39,31 @@ public class BookController {
     @AdminOnlyEndpoint
     public ResponseEntity<?> getAllBooks(@RequestParam(value = "paginate", required = false, defaultValue = "false") boolean paginate,
                                          @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                         @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+                                         @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+                                         @RequestParam(value = "search", required = false) String search) {
         if (paginate) {
             Pageable pageable = PageRequest.of(page, size, Sort.by("title").ascending());
-            Page<BookEntity> bookPage = bookService.getAllBooks(pageable);
+            Page<BookEntity> bookPage;
+            if (search != null && !search.isEmpty()) {
+                bookPage = bookService.searchBooks(search, pageable);
+            } else {
+                bookPage = bookService.getAllBooks(pageable);
+            }
             List<BookDto> books = bookPage.getContent().stream()
                     .map(book -> modelMapper.map(book, BookDto.class))
                     .collect(Collectors.toList());
             return ResponseEntity.ok(new PaginatedResponse<>(books, bookPage.getTotalPages(), bookPage.getTotalElements()));
         } else {
-            List<BookDto> books = bookService.getAllBooks().stream()
-                    .map(book -> modelMapper.map(book, BookDto.class))
-                    .collect(Collectors.toList());
+            List<BookDto> books;
+            if (search != null && !search.isEmpty()) {
+                books = bookService.searchBooks(search).stream()
+                        .map(book -> modelMapper.map(book, BookDto.class))
+                        .collect(Collectors.toList());
+            } else {
+                books = bookService.getAllBooks().stream()
+                        .map(book -> modelMapper.map(book, BookDto.class))
+                        .collect(Collectors.toList());
+            }
             return ResponseEntity.ok(books);
         }
     }
@@ -71,7 +84,6 @@ public class BookController {
     @AdminOnlyEndpoint
     public ResponseEntity<?> createBook(@Valid @RequestBody CreateBookRequest createBookRequest) {
         BookEntity bookEntity = modelMapper.map(createBookRequest, BookEntity.class);
-        bookEntity.setPublishedAt(createBookRequest.getPublishedAtAsDate());
 
         BookEntity createdBook = bookService.createBook(bookEntity);
         BookDto createdBookDto = modelMapper.map(createdBook, BookDto.class);

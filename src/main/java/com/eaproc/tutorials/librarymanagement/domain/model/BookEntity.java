@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "books")
+@Table(name = "books",
+        uniqueConstraints = {@UniqueConstraint(columnNames = "isbn")},
+        indexes = {@Index(name = "idx_title_isbn", columnList = "title,isbn")})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,7 +27,7 @@ public class BookEntity {
     private String author;
 
     // https://www.activebarcode.com/codes/isbn10
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     private String isbn;
 
     @Column(nullable = false)
