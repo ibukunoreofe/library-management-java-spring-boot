@@ -71,6 +71,8 @@ public class BookController {
     @AdminOnlyEndpoint
     public ResponseEntity<?> createBook(@Valid @RequestBody CreateBookRequest createBookRequest) {
         BookEntity bookEntity = modelMapper.map(createBookRequest, BookEntity.class);
+        bookEntity.setPublishedAt(createBookRequest.getPublishedAtAsDate());
+
         BookEntity createdBook = bookService.createBook(bookEntity);
         BookDto createdBookDto = modelMapper.map(createdBook, BookDto.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBookDto);

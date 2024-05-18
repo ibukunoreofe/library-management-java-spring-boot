@@ -19,19 +19,6 @@ public class CreateBookRequestMapperImpl implements Mapper<BookEntity, CreateBoo
 
     public CreateBookRequestMapperImpl() {
         this.modelMapper = new ModelMapper();
-        configureMapper();
-    }
-
-    private void configureMapper() {
-        modelMapper.createTypeMap(CreateBookRequest.class, BookEntity.class)
-                .addMappings(mapper -> {
-                    mapper.map(src -> {
-                        Date publishedAt = src.getPublishedAt() == null ? null :
-                                Date.from(src.getPublishedAt().atStartOfDay(ZoneId.systemDefault()).toInstant());
-                        logger.info("Mapping publishedAt: " + src.getPublishedAt() + " to " + publishedAt);
-                        return publishedAt;
-                    }, BookEntity::setPublishedAt);
-                });
     }
 
     @Override

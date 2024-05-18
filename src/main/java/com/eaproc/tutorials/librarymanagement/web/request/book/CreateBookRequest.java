@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -34,4 +36,8 @@ public class CreateBookRequest {
     @Min(value = 1, message = "Copies must be at least 1")
     @Max(value = 20000, message = "Copies must not exceed 20000")
     private Integer copies;
+
+    public Date getPublishedAtAsDate() {
+        return Date.from(getPublishedAt().atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
 }
