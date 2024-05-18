@@ -64,4 +64,8 @@ public class CheckoutService {
         checkoutEntity.setReturnDateTimeUtc(LocalDateTime.now(ZoneOffset.UTC));
         return checkoutRepository.save(checkoutEntity);
     }
+
+    public int countCheckedOutBooks(Long bookId) {
+        return (int) checkoutRepository.countCheckedOutBooks(bookId);
+    }
 }
